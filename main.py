@@ -25,7 +25,7 @@ def summarize_paper(pdf_path,database_id,notion_api_key):
         print(key, dict[key])
 
     add_notion(dict,database_id,notion_api_key)
-    return concatenated_text
+    return dict
 
 if __name__=="__main__":
     summarize_paper("./doc/test.pdf")

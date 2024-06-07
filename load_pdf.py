@@ -17,7 +17,7 @@ model_json = genai.GenerativeModel(
     generation_config={"response_mime_type": "application/json"}
     )
     
-def get_pdf_doc_object(pdf_path: str) -> tuple[fitz.Document, int]:
+def get_pdf_doc_object(pdf_path: str):
     """
     `fitz.open()`を使用してPDFファイルを開き、PDFドキュメントオブジェクトとページ数を返します。
 
@@ -129,7 +129,7 @@ def get_properties_from_text(text):
     ,text]
     response = model_json.generate_content(prompt).text
     response = json.loads(response)
-    response['authors'] = [{'name': author} for author in response['authors']]
+    response['authors'] = [{'name': author.replace(',', '.')} for author in response['authors']]
     return response
 
 def get_summarize_by_format_from_text(text):
