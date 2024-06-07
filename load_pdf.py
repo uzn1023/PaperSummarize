@@ -99,7 +99,8 @@ def summarize_pdf_image(doc):
             # 画像をテキスト化
             generate_contet_list = ["""You are an assistant tasked with summarizing images for retrieval. \
                 These summaries will be embedded and used to retrieve the raw image. \
-                Give a concise summary of the image that is well optimized for retrieval.""",image]
+                Give a concise summary of the image that is well optimized for retrieval.\
+                total words should be 300 - 500 words""",image]
             res = model.generate_content(generate_contet_list)
             image_description = res.candidates[0].content.parts[0].text
 
