@@ -1,5 +1,4 @@
 from notion_client import Client
-import config as config
 import json
 import re
 import os
