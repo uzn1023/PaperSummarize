@@ -8,6 +8,7 @@ from PIL import Image
 import io
 import json
 import streamlit as st
+import time
 
 genai.configure(api_key=st.secrets['GOOGLE_API_KEY'])
 model_name = "gemini-1.5-flash"
@@ -47,7 +48,8 @@ def summarize_text_data(text: str) -> str:
 	要約テキスト
     """
     generate_contet_list = ["""You are an assistant tasked with summarizing academic paper. \
-    These summaries should include important point to explain research.""",text]
+    These summaries should include important point to explain research.\
+    total word should be 100 - 200 words""",text]
 
     res = model.generate_content(generate_contet_list)
     text_sum = res.candidates[0].content.parts[0].text
@@ -64,12 +66,16 @@ def summarize_pdf_text(doc):
 
         page_num = page.number + 1
         print(f'Page num is {page_num}, Page text length is {len(page_text)}')
-
-        summarized_page_text = summarize_text_data(page_text)
-        text_metadata[page_num] = {
-        "summarized_text": summarized_page_text,
-        'text':page_text,
-        }
+        for _ in range(5):
+            try:
+                summarized_page_text = summarize_text_data(page_text)
+                text_metadata[page_num] = {
+                "summarized_text": summarized_page_text,
+                'text':page_text,
+                }
+            except Exception as e:
+                print(f"Error summarizing page {page_num}: {e}")
+                time.sleep(10)
     return text_metadata
 
 def summarize_pdf_image(doc):
@@ -128,9 +134,14 @@ def get_properties_from_text(text):
         
     """
     ,text]
-    response = model_json.generate_content(prompt).text
-    response = json.loads(response)
-    response['authors'] = [{'name': author.replace(',', '.')} for author in response['authors']]
+    for _ in range(5):
+        try:
+            response = model_json.generate_content(prompt).text
+            response = json.loads(response)
+            response['authors'] = [{'name': author.replace(',', '.')} for author in response['authors']]
+        except Exception as e:
+            print(f"Error summarizing paper:{e}")
+            time.sleep(10)
     return response
 
 def get_summarize_by_format_from_text(text):

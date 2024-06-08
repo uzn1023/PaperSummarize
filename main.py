@@ -15,7 +15,7 @@ def summarize_paper(pdf_path,database_id,notion_api_key):
 
     formated_paper = get_summarize_by_format_from_text(concatenated_text)
 
-    # time.sleep(10)
+    time.sleep(60)
 
     #images = summarize_pdf_image(doc)
 
