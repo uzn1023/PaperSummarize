@@ -93,7 +93,23 @@ def add_notion(dict,database_id,NOTION_API_KEY):
                 "論文のキーワード": {
                     "multi_select": dict['論文のキーワード']
                 }
-            }
+            },
+            "children": [
+                {
+                    "object": "block",
+                    "type": "bulleted_list_item",
+                    "bulleted_list_item": {
+                        "rich_text": [
+                            {
+                                "type": "text",
+                                "text": {
+                                    "content": text
+                                }
+                            } 
+                        ]
+                    }
+                } for text in dict['各章要約']
+            ]
         }
 
         # Notionのデータベースに新しいページを追加

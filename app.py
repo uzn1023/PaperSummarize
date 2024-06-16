@@ -5,9 +5,32 @@ import traceback
 import requests
 
 
-# サイドバーでAPIキーとデータベースIDを指定
-notion_api_key = st.sidebar.text_input('Notion APIキー', value=st.secrets['NOTION_API_KEY'], type='password')
-database_id = st.sidebar.text_input('データベースID', value=st.secrets['database_id'])
+# ユーザー名と対応する Notion API キーとデータベース ID を保存する辞書
+user_data = {
+    "Uezono": {
+        "notion_api_key": st.secrets['NOTION_API_KEY'],
+        "database_id": st.secrets['database_id']
+    },
+    "You-go": {
+        "notion_api_key": "hogehoge",
+        "database_id": "fugafuga"
+    }
+    # 他のユーザーを追加する
+}
+# サイドバーでユーザー名を選択
+selected_user = st.sidebar.selectbox('ユーザー名を選択', list(user_data.keys()))
+
+# 選択されたユーザーの Notion API キーとデータベース ID を取得
+notion_api_key = user_data[selected_user]["notion_api_key"]
+database_id = user_data[selected_user]["database_id"]
+
+# サイドバーに自動入力と手動入力のオプションを追加
+st.sidebar.text_input('Notion APIキー', value=notion_api_key, type='password', key='api_key')
+st.sidebar.text_input('データベースID', value=database_id, key='database_id')
+
+# 手動入力された値を取得
+notion_api_key = st.session_state.api_key
+database_id = st.session_state.database_id
 
 st.title("論文要約GPT")
 

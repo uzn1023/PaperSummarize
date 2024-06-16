@@ -152,13 +152,15 @@ def get_summarize_by_format_from_text(text):
         どう主張が示された？: How the central claim of this paper was validated?(Answer in japanese, 1-3 sentence)
         残された課題は？: What are the remaining issues and discussions resulting from the research?(Answer in japanese, 1-3 sentence)
         論文のキーワード : What are keywords of this paper? (Answer in English, 3 - 5 keywords)
-        
+        各章要約: Provide a list format with each chapter description in about 5 sentences each. format of each list sould be "chapter name : body sentences". Please Refer to the chart and table name in the explanation. (Answer in japanese.)
         {
             "どんなものか？": str,
             "どこがすごい？": str,
             "肝となる手法は？": str
             "どう主張が示された？": str,
-            "論文のキーワード": list[str]
+            "残された課題は？": str
+            "論文のキーワード": list[str],
+            "各章要約": list[str]
         }
         Return: dict
 
@@ -166,6 +168,8 @@ def get_summarize_by_format_from_text(text):
     """
     ,text]
     response = model_json.generate_content(prompt).text
+    print(response)
+    response = response.replace("\\", "\\\\")
     response = json.loads(response)
     response['論文のキーワード'] = [{'name': author} for author in response['論文のキーワード']]
     return response
