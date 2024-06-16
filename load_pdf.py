@@ -137,7 +137,7 @@ def get_properties_from_text(text):
     for _ in range(5):
         try:
             response = model_json.generate_content(prompt).text
-            response = json.loads(response)
+            response = json.loads(response, strict=False)
             response['authors'] = [{'name': author.replace(',', '.')} for author in response['authors']]
             break
         except Exception as e:
@@ -171,7 +171,7 @@ def get_summarize_by_format_from_text(text):
     response = model_json.generate_content(prompt).text
     print(response)
     response = response.replace("\\", "\\\\")
-    response = json.loads(response)
+    response = json.loads(response, strict=False)
     response['論文のキーワード'] = [{'name': author} for author in response['論文のキーワード']]
     return response
 
