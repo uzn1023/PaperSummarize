@@ -170,6 +170,7 @@ def get_summarize_by_format_from_text(text):
     response = model_json.generate_content(prompt).text
     print(response)
     response = response.replace("\\", "\\\\")
+    response = response.replace(",", "\\,")
     response = json.loads(response)
     response['論文のキーワード'] = [{'name': author} for author in response['論文のキーワード']]
     return response
