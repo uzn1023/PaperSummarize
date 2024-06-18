@@ -3,20 +3,22 @@ import tempfile
 from main import summarize_paper
 import traceback
 import requests
+from PIL import Image
 
+favicon = Image.open('favicon.jpg')
+image = Image.open('image.jpg')
+st.set_page_config(
+    page_title="PS-GPT", 
+    page_icon=favicon
+)
 
 # ユーザー名と対応する Notion API キーとデータベース ID を保存する辞書
 user_data = {
-    "Uezono": {
-        "notion_api_key": st.secrets['NOTION_API_KEY'],
-        "database_id": st.secrets['database_id']
-    },
-    "You-go": {
-        "notion_api_key": "hogehoge",
-        "database_id": "fugafuga"
-    }
-    # 他のユーザーを追加する
+    "Uezono": st.secrets['Uezono'],
+    "You-go": st.secrets['You-go']
 }
+
+st.sidebar.image(image)
 # サイドバーでユーザー名を選択
 selected_user = st.sidebar.selectbox('ユーザー名を選択', list(user_data.keys()))
 
@@ -26,19 +28,20 @@ database_id = user_data[selected_user]["database_id"]
 
 # サイドバーに自動入力と手動入力のオプションを追加
 st.sidebar.text_input('Notion APIキー', value=notion_api_key, type='password', key='api_key')
-st.sidebar.text_input('データベースID', value=database_id, key='database_id')
+st.sidebar.text_input('データベースID', value=database_id, type='password', key='database_id')
 
 # 手動入力された値を取得
 notion_api_key = st.session_state.api_key
 database_id = st.session_state.database_id
 
-st.title("論文要約GPT")
+st.title(":spiral_note_pad: PaperSammarizeGPT")
+st.caption('論文のPDFファイルをアップロードまたはPDFのURLを入力して、「要約開始」ボタンを押して少し待つと、要約が表示され、あなたのNotionDBにも送信されます。  \nPDFファイルもURLもたくさん同時に処理できます。URLは改行で区切ってください。  \nあんまりたくさん論文を読ませすぎるとGeminiのAPIが枯渇します(数100本/日が限界)。  \nたまに失敗しますが、怒らないでください。')
 
 uploaded_files = st.file_uploader("PDFファイルをアップロードしてください", type="pdf", accept_multiple_files=True)
 pdf_urls = st.text_area("PDFファイルのURLを改行区切りで入力してください")
 
 if uploaded_files or pdf_urls:
-    if st.button('処理を開始'):
+    if st.button('要約開始'):
         progress_bar = st.progress(0)
         if uploaded_files:
             for i, uploaded_file in enumerate(uploaded_files):
